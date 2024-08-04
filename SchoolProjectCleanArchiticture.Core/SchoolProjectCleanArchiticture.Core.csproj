@@ -1,0 +1,49 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>net8.0</TargetFramework>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <Nullable>enable</Nullable>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <Compile Remove="Mapping\DepartProfiles\**" />
+    <EmbeddedResource Remove="Mapping\DepartProfiles\**" />
+    <None Remove="Mapping\DepartProfiles\**" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\SchoolProjectCleanArchiticture.Data\SchoolProjectCleanArchiticture.Data.csproj" />
+    <ProjectReference Include="..\SchoolProjectCleanArchiticture.Infrastructure\SchoolProjectCleanArchiticture.Infrastructure.csproj" />
+    <ProjectReference Include="..\SchoolProjectCleanArchiticture.Services\SchoolProjectCleanArchiticture.Services.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="AutoMapper" Version="13.0.1" />
+    <PackageReference Include="FluentValidation" Version="11.9.2" />
+    <PackageReference Include="FluentValidation.AspNetCore" Version="11.3.0" />
+    <PackageReference Include="FluentValidation.DependencyInjectionExtensions" Version="11.9.2" />
+    <PackageReference Include="MediatR" Version="12.3.0" />
+    <PackageReference Include="Microsoft.Extensions.Localization" Version="8.0.7" />
+    <PackageReference Include="Microsoft.Extensions.Localization.Abstractions" Version="8.0.7" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <EmbeddedResource Update="Resources\SharedResources.ar-EG.resx">
+      <Generator>ResXFileCodeGenerator</Generator>
+      <LastGenOutput>SharedResources.ar-EG.Designer.cs</LastGenOutput>
+    </EmbeddedResource>
+    <EmbeddedResource Update="Resources\SharedResources.en-US.resx">
+      <Generator>ResXFileCodeGenerator</Generator>
+      <LastGenOutput>SharedResources.en-US.Designer.cs</LastGenOutput>
+    </EmbeddedResource>
+  </ItemGroup>
+
+  <ItemGroup>
+    <Folder Include="Features\Departments\Command\Hundlers\" />
+    <Folder Include="Features\Departments\Command\Models\" />
+    <Folder Include="Features\Departments\Command\Validators\" />
+    <Folder Include="Mapping\DepaProfiles\CommandQuery\" />
+  </ItemGroup>
+
+</Project>
