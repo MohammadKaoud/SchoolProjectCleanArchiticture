@@ -43,6 +43,8 @@
     <Folder Include="Features\Departments\Command\Hundlers\" />
     <Folder Include="Features\Departments\Command\Models\" />
     <Folder Include="Features\Departments\Command\Validators\" />
+    <Folder Include="Features\User\Query\Hundler\" />
+    <Folder Include="Features\User\Query\Models\" />
     <Folder Include="Mapping\DepaProfiles\CommandQuery\" />
   </ItemGroup>
 

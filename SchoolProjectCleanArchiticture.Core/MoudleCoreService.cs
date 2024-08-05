@@ -24,6 +24,7 @@ namespace SchoolProjectCleanArchiticture.Core
            
                  services.AddScoped(typeof(IPipelineBehavior<,>), typeof(ValidationBehavior<,>));
             services.AddAutoMapper(typeof(DepartmentProfile));
+            services.AddAutoMapper(typeof(UserProfile));
                 
            
 

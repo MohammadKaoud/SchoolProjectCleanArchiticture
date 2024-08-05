@@ -7,8 +7,9 @@ using System.Threading.Tasks;
 
 namespace SchoolProjectCleanArchiticture.Data.Entites.Identity
 {
-    public  class User:IdentityUser
+    public  class SUser:IdentityUser
     {
+        public string FullName { get; set; }
         public string Address { get; set; }
         public string Country { get; set; }
 
