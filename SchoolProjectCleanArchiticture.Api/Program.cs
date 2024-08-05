@@ -1,8 +1,10 @@
+using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Options;
 using SchoolProjectCleanArchiticture.Core;
 using SchoolProjectCleanArchiticture.Core.Middleware;
 using SchoolProjectCleanArchiticture.Data;
+using SchoolProjectCleanArchiticture.Data.Entites.Identity;
 using SchoolProjectCleanArchiticture.Infrastructure;
 using SchoolProjectCleanArchiticture.Services;
 using System.Globalization;
@@ -56,9 +58,21 @@ builder.Services.AddCors(options =>
         .AllowAnyOrigin();
         
     });
-}); 
+});
 
 #endregion
+#region Identity
+builder.Services.AddIdentity<User, IdentityRole>(options =>
+{
+    options.Password.RequireDigit = true;
+    options.Password.RequireLowercase = true;
+    options.Password.RequireNonAlphanumeric = true;
+    options.Password.RequireUppercase = true;
+    options.Password.RequiredLength = 6;
+    options.Password.RequiredUniqueChars = 1;
+}).AddEntityFrameworkStores<ApplicationDbContext>().AddDefaultTokenProviders();
+#endregion
+
 
 var app = builder.Build();
 

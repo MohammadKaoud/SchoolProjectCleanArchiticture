@@ -18,6 +18,8 @@ namespace SchoolProjectCleanArchiticture.Infrastructure
             services.AddScoped<ISubjectRepo, SubjectRepo>();
             services.AddScoped<IDepartmentRepo, DepartmentRepo>();
             services.AddScoped<ITeacherRepo, TeacherRepo>();
+           
+            
             return services;
         }
     }
