@@ -47,6 +47,7 @@ builder.Services.Configure<RequestLocalizationOptions>(options =>
 
 
 #endregion
+
 # region AddCors
 var CorsName = "KaoudCors";
 builder.Services.AddCors(options =>
@@ -61,8 +62,9 @@ builder.Services.AddCors(options =>
 });
 
 #endregion
+
 #region Identity
-builder.Services.AddIdentity<User, IdentityRole>(options =>
+builder.Services.AddIdentity<SUser, IdentityRole>(options =>
 {
     options.Password.RequireDigit = true;
     options.Password.RequireLowercase = true;
@@ -70,6 +72,9 @@ builder.Services.AddIdentity<User, IdentityRole>(options =>
     options.Password.RequireUppercase = true;
     options.Password.RequiredLength = 6;
     options.Password.RequiredUniqueChars = 1;
+
+
+    //options.SignIn.RequireConfirmedEmail = true;
 }).AddEntityFrameworkStores<ApplicationDbContext>().AddDefaultTokenProviders();
 #endregion
 

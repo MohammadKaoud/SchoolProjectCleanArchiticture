@@ -12,7 +12,7 @@ using SchoolProjectCleanArchiticture.Data.Entites.Identity;
 using Microsoft.EntityFrameworkCore.Internal;
 namespace SchoolProjectCleanArchiticture.Data
 {
-    public class ApplicationDbContext : IdentityDbContext<User>
+    public class ApplicationDbContext : IdentityDbContext<SUser>
     {
         public ApplicationDbContext(DbContextOptions<ApplicationDbContext> dbContextOptions) : base(dbContextOptions) 
         {
@@ -23,7 +23,7 @@ namespace SchoolProjectCleanArchiticture.Data
 
         public DbSet<Department> departments { get; set; }
         public DbSet<Teacher> Teachers { get; set; }
-        public DbSet<User>Users {  get; set; }
+        public DbSet<SUser>Users {  get; set; }
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
            
