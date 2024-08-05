@@ -13,6 +13,8 @@ namespace SchoolProjectCleanArchiticture.Core.Mapping
         public UserProfile()
         {
             AddUserMapping();
+            MappingToGetPaginatedResult();
+            MappingtoGetSingleUserByName();
         }
     }
 }

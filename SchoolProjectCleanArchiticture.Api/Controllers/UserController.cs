@@ -4,6 +4,7 @@ using Microsoft.AspNetCore.Mvc;
 using SchoolProjectCleanArchiticture.Api.Base;
 using SchoolProjectCleanArchiticture.Core.Features.Students.Commands.Models;
 using SchoolProjectCleanArchiticture.Core.Features.User.Command.Models;
+using SchoolProjectCleanArchiticture.Core.Features.User.Query.Models;
 
 namespace SchoolProjectCleanArchiticture.Api.Controllers
 {
@@ -22,6 +23,21 @@ namespace SchoolProjectCleanArchiticture.Api.Controllers
             var result = await  _mediator.Send(addUserCommand);
             return NewResult(result);
         }
+        [HttpGet]
+        [Route("UsersPaginatedResult")]
+        public async Task<IActionResult> GetPaginatedUser([FromQuery]GetPaginatedQuery getPaginatedQuery)
+        {
+            var result=await _mediator.Send(getPaginatedQuery);
+            return Ok(result);
+        }
+        [HttpGet]
+        [Route("GetSingleUser")]
+        public async Task<IActionResult> GetUserByIdAsync( string UserName)
+        {
+            var result = await _mediator.Send(new GetUserByNameQuery(UserName));
+            return NewResult(result);
+        }
+
 
     }
 }
