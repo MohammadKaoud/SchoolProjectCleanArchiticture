@@ -37,7 +37,14 @@ namespace SchoolProjectCleanArchiticture.Api.Controllers
             var result = await _mediator.Send(new GetUserByNameQuery(UserName));
             return NewResult(result);
         }
+        [HttpPut]
+        [Route("Update User")]
 
 
+        public async Task<IActionResult> UpdateUser([FromBody] EditUserCommand editUserCommand)
+        {
+            var result = await _mediator.Send(editUserCommand);
+            return NewResult(result);
+        }
     }
 }

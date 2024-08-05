@@ -15,6 +15,7 @@ namespace SchoolProjectCleanArchiticture.Core.Mapping
             AddUserMapping();
             MappingToGetPaginatedResult();
             MappingtoGetSingleUserByName();
+            MappingEditUser();
         }
     }
 }

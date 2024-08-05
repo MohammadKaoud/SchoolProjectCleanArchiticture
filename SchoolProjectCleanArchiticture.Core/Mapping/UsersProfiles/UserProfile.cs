@@ -37,6 +37,10 @@ namespace SchoolProjectCleanArchiticture.Core.Mapping
             CreateMap<SUser,UserToView>();  
 
             } 
+        public void MappingEditUser()
+        {
+            CreateMap<EditUserCommand, SUser>().ReverseMap();
+        }
      
 
      

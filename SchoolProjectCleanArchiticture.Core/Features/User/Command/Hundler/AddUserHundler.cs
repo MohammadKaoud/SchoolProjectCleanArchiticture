@@ -16,7 +16,7 @@ using System.Threading.Tasks;
 
 namespace SchoolProjectCleanArchiticture.Core.Features.User.Command.Hundler
 {
-    public class AddUserHundler : IRequestHandler<AddUserCommand, ResponseM<string>>
+    public class AddUserHundler : IRequestHandler<AddUserCommand, ResponseM<string>>,IRequestHandler<EditUserCommand,ResponseM<string>>
     {
         private IStringLocalizer<SharedResources>_stringLocalizer;
         private UserManager<SUser> _userManager;
@@ -43,6 +43,23 @@ namespace SchoolProjectCleanArchiticture.Core.Features.User.Command.Hundler
             }
             return responseHundler.BadRequest<string>("There Was Something Wrong");
 
+        }
+
+        public async
+            Task<ResponseM<string>> Handle(EditUserCommand request, CancellationToken cancellationToken)
+        {
+            ResponseHundler responseHundler = new ResponseHundler(_stringLocalizer);
+            ResponseM<string> responseM = new ResponseM<string>();
+            var response = await _userManager.FindByIdAsync(request.Id);
+            if (response == null) return responseHundler.BadRequest<string>("There is no exist user With this UserName  ");
+            var mapper= _mapper.Map(request,response);
+             var result=await _userManager.UpdateAsync(mapper);
+            if (result.Succeeded)
+            {
+                return responseHundler.Success<string>("complete Updating");
+            }
+
+            return responseHundler.BadRequest<string>("Not Complete Updating For Some reasons ");
         }
     }
 }
