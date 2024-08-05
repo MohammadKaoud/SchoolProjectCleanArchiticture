@@ -16,7 +16,9 @@ using System.Threading.Tasks;
 
 namespace SchoolProjectCleanArchiticture.Core.Features.User.Command.Hundler
 {
-    public class AddUserHundler : IRequestHandler<AddUserCommand, ResponseM<string>>,IRequestHandler<EditUserCommand,ResponseM<string>>
+    public class AddUserHundler : IRequestHandler<AddUserCommand, ResponseM<string>>
+        ,IRequestHandler<EditUserCommand,ResponseM<string>>
+        ,IRequestHandler<ChangePasswordCommand,ResponseM<string>>
     {
         private IStringLocalizer<SharedResources>_stringLocalizer;
         private UserManager<SUser> _userManager;
@@ -61,6 +63,26 @@ namespace SchoolProjectCleanArchiticture.Core.Features.User.Command.Hundler
             }
 
             return responseHundler.BadRequest<string>("Not Complete Updating For Some reasons ");
+        }
+
+        public async Task<ResponseM<string>> Handle(ChangePasswordCommand request, CancellationToken cancellationToken)
+        {
+            ResponseHundler responseHundler = new ResponseHundler(_stringLocalizer);
+            ResponseM<string> responseM = new ResponseM<string>();
+            var response = await _userManager.FindByIdAsync(request.Id);
+           var resultOfChangingPassword=await   _userManager.ChangePasswordAsync(response,request.CurrentPassword,request.NewPassword);
+            if (resultOfChangingPassword.Succeeded)
+            {
+                await _userManager.RemovePasswordAsync(response);
+             var reulstofAddingPassword=  await  _userManager.AddPasswordAsync(response, request.NewPassword);
+                if (reulstofAddingPassword.Succeeded)
+                {
+                    return responseHundler.Success<string>("Changing Password Operation has Been Completed ");
+                }
+                return responseHundler.BadRequest<string>("cannot Adding New Password For Some Reasons");
+            }
+            return responseHundler.BadRequest<string>("Enterd The Current Password Wrong Please Try Again ");
+
         }
     }
 }
