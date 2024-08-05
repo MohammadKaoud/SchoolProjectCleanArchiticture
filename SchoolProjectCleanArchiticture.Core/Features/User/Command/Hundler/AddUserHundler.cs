@@ -54,6 +54,7 @@ namespace SchoolProjectCleanArchiticture.Core.Features.User.Command.Hundler
             if (response == null) return responseHundler.BadRequest<string>("There is no exist user With this UserName  ");
             var mapper= _mapper.Map(request,response);
              var result=await _userManager.UpdateAsync(mapper);
+           
             if (result.Succeeded)
             {
                 return responseHundler.Success<string>("complete Updating");

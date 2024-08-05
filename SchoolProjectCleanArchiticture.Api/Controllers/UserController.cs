@@ -46,5 +46,13 @@ namespace SchoolProjectCleanArchiticture.Api.Controllers
             var result = await _mediator.Send(editUserCommand);
             return NewResult(result);
         }
+        [HttpDelete]
+        [Route("{Id}")]
+        public async Task<IActionResult>DeleteUserAsync(string Id)
+        {
+            var result=await _mediator.Send(new DeleteUser(Id));
+            return NewResult(result);   
+        }
+           
     }
 }

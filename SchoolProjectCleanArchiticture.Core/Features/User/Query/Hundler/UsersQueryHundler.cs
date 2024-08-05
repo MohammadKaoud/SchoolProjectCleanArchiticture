@@ -19,6 +19,7 @@ namespace SchoolProjectCleanArchiticture.Core.Features.User.Query.Hundler
 {
     public class UsersQueryHundler : IRequestHandler<GetPaginatedQuery, PaginatedResult<GetPaginatedUsers>>
         ,IRequestHandler<GetUserByNameQuery, ResponseM<UserToView>>
+        ,IRequestHandler<DeleteUser,ResponseM<string>>
     {
         private readonly IStringLocalizer<SharedResources> _stringLocalizer;
         private readonly IMapper _mapper ;
@@ -57,6 +58,24 @@ namespace SchoolProjectCleanArchiticture.Core.Features.User.Query.Hundler
             responseM = responseHundler.Success<UserToView>(mapper);
             return responseM;
 
+        }
+
+        public async Task<ResponseM<string>> Handle(DeleteUser request, CancellationToken cancellationToken)
+        {
+            ResponseHundler responseHundler = new ResponseHundler(_stringLocalizer);
+            ResponseM<UserToView> responseM = new ResponseM<UserToView>();
+            var _userToDelete = await _userManager.FindByIdAsync(request.Id);
+            if(_userToDelete == null)
+            {
+                return  responseHundler.NotFound<string>("Not Found");
+               
+            }
+           var result=await   _userManager.DeleteAsync(_userToDelete);
+            if (result.Succeeded)
+            {
+                return responseHundler.Success<string>("Deleted Successfully");
+            }
+            return responseHundler.BadRequest<string>("Not Deleted From some Reasons");
         }
     }
 }
