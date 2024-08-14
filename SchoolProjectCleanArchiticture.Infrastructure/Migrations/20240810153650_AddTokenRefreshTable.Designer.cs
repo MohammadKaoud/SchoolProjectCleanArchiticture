@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using SchoolProjectCleanArchiticture.Data;
 
@@ -11,9 +12,11 @@ using SchoolProjectCleanArchiticture.Data;
 namespace SchoolProjectCleanArchiticture.Infrastructure.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    partial class ApplicationDbContextModelSnapshot : ModelSnapshot
+    [Migration("20240810153650_AddTokenRefreshTable")]
+    partial class AddTokenRefreshTable
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -205,7 +208,7 @@ namespace SchoolProjectCleanArchiticture.Infrastructure.Migrations
                         });
                 });
 
-            modelBuilder.Entity("SchoolProjectCleanArchiticture.Data.Entites.Identity.User", b =>
+            modelBuilder.Entity("SchoolProjectCleanArchiticture.Data.Entites.Identity.SUser", b =>
                 {
                     b.Property<string>("Id")
                         .HasColumnType("nvarchar(450)");
@@ -231,6 +234,10 @@ namespace SchoolProjectCleanArchiticture.Infrastructure.Migrations
 
                     b.Property<bool>("EmailConfirmed")
                         .HasColumnType("bit");
+
+                    b.Property<string>("FullName")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<bool>("LockoutEnabled")
                         .HasColumnType("bit");
@@ -296,6 +303,7 @@ namespace SchoolProjectCleanArchiticture.Infrastructure.Migrations
                         .HasColumnType("bit");
 
                     b.Property<string>("JwtId")
+                        .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("RefreshToken")
@@ -496,7 +504,7 @@ namespace SchoolProjectCleanArchiticture.Infrastructure.Migrations
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserClaim<string>", b =>
                 {
-                    b.HasOne("SchoolProjectCleanArchiticture.Data.Entites.Identity.User", null)
+                    b.HasOne("SchoolProjectCleanArchiticture.Data.Entites.Identity.SUser", null)
                         .WithMany()
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade)
@@ -505,7 +513,7 @@ namespace SchoolProjectCleanArchiticture.Infrastructure.Migrations
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserLogin<string>", b =>
                 {
-                    b.HasOne("SchoolProjectCleanArchiticture.Data.Entites.Identity.User", null)
+                    b.HasOne("SchoolProjectCleanArchiticture.Data.Entites.Identity.SUser", null)
                         .WithMany()
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade)
@@ -520,7 +528,7 @@ namespace SchoolProjectCleanArchiticture.Infrastructure.Migrations
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.HasOne("SchoolProjectCleanArchiticture.Data.Entites.Identity.User", null)
+                    b.HasOne("SchoolProjectCleanArchiticture.Data.Entites.Identity.SUser", null)
                         .WithMany()
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade)
@@ -529,7 +537,7 @@ namespace SchoolProjectCleanArchiticture.Infrastructure.Migrations
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserToken<string>", b =>
                 {
-                    b.HasOne("SchoolProjectCleanArchiticture.Data.Entites.Identity.User", null)
+                    b.HasOne("SchoolProjectCleanArchiticture.Data.Entites.Identity.SUser", null)
                         .WithMany()
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade)

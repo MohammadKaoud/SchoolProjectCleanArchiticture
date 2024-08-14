@@ -18,6 +18,7 @@ namespace SchoolProjectCleanArchiticture.Services
             services.AddScoped<ILocalizationService, LocalizationService>();
             services.AddScoped<IDepartmentService
                 , DepartmentService>();
+            services.AddScoped<IAuthenticationService, AuthenticationService>();
             return services; 
         }
         

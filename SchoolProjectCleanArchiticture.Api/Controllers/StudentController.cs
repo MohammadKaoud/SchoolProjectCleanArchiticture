@@ -7,23 +7,23 @@ using SchoolProjectCleanArchiticture.Data.Entites;
 using SchoolProjectCleanArchiticture.Core.Features.Students;
 using SchoolProjectCleanArchiticture.Core.Features.Students.Queries.Models;
 using SchoolProjectCleanArchiticture.Core.Dtos;
-using Azure;
 using SchoolProjectCleanArchiticture.Core.Base;
 using SchoolProjectCleanArchiticture.Core.Features.Students.Commands.Models;
 using SchoolProjectCleanArchiticture.Data;
 using SchoolProjectCleanArchiticture.Api.Base;
 using SchoolProjectCleanArchiticture.Infrastructure.Repos;
 using SchoolProjectCleanArchiticture.Services.Abstract;
+using Microsoft.AspNetCore.Authorization;
 
 namespace SchoolProjectCleanArchiticture.Api.Controllers
 {
+   
     [Route("api/[controller]")]
     [ApiController]
+    [Authorize(AuthenticationSchemes ="Bearer")]
+
     public class StudentController : ApplicationBaseController
     {
-        
-
-
         [HttpGet]
         public async Task<IActionResult> GetStudents()
         {
