@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using SchoolProjectCleanArchiticture.Data;
 
@@ -11,9 +12,11 @@ using SchoolProjectCleanArchiticture.Data;
 namespace SchoolProjectCleanArchiticture.Infrastructure.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    partial class ApplicationDbContextModelSnapshot : ModelSnapshot
+    [Migration("20240805131019_AddColumnforUserEntity")]
+    partial class AddColumnforUserEntity
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -282,51 +285,6 @@ namespace SchoolProjectCleanArchiticture.Infrastructure.Migrations
                     b.ToTable("AspNetUsers", (string)null);
                 });
 
-            modelBuilder.Entity("SchoolProjectCleanArchiticture.Data.Entites.Identity.UserRefreshToken", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
-
-                    b.Property<DateTime>("ExpiredAt")
-                        .HasColumnType("datetime2");
-
-                    b.Property<bool>("IsRevoked")
-                        .HasColumnType("bit");
-
-                    b.Property<bool>("IsUsed")
-                        .HasColumnType("bit");
-
-                    b.Property<string>("JwtId")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("RefreshToken")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("SUserId")
-                        .HasColumnType("nvarchar(450)");
-
-                    b.Property<DateTime>("TimeAdded")
-                        .HasColumnType("datetime2");
-
-                    b.Property<string>("Token")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("UserId")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("SUserId");
-
-                    b.ToTable("UsersRefreshTokens");
-                });
-
             modelBuilder.Entity("SchoolProjectCleanArchiticture.Data.Entites.Student", b =>
                 {
                     b.Property<int>("Id")
@@ -540,15 +498,6 @@ namespace SchoolProjectCleanArchiticture.Infrastructure.Migrations
                         .IsRequired();
                 });
 
-            modelBuilder.Entity("SchoolProjectCleanArchiticture.Data.Entites.Identity.UserRefreshToken", b =>
-                {
-                    b.HasOne("SchoolProjectCleanArchiticture.Data.Entites.Identity.SUser", "SUser")
-                        .WithMany("RefreshTokens")
-                        .HasForeignKey("SUserId");
-
-                    b.Navigation("SUser");
-                });
-
             modelBuilder.Entity("SchoolProjectCleanArchiticture.Data.Entites.Student", b =>
                 {
                     b.HasOne("SchoolProjectCleanArchiticture.Data.Entites.Department", "Department")
@@ -619,11 +568,6 @@ namespace SchoolProjectCleanArchiticture.Infrastructure.Migrations
                     b.Navigation("Students");
 
                     b.Navigation("Teachers");
-                });
-
-            modelBuilder.Entity("SchoolProjectCleanArchiticture.Data.Entites.Identity.SUser", b =>
-                {
-                    b.Navigation("RefreshTokens");
                 });
 
             modelBuilder.Entity("SchoolProjectCleanArchiticture.Data.Entites.Teacher", b =>

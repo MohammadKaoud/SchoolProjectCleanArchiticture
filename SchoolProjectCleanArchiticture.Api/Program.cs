@@ -48,6 +48,7 @@ builder.Services.Configure<RequestLocalizationOptions>(options =>
 
 
 #endregion
+
 # region AddCors
 var CorsName = "KaoudCors";
 builder.Services.AddCors(options =>
@@ -62,6 +63,7 @@ builder.Services.AddCors(options =>
 });
 
 #endregion
+
 #region Identity
 builder.Services.AddIdentity<SUser, IdentityRole>(options =>
 {
