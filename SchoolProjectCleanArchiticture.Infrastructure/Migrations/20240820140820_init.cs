@@ -8,7 +8,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 namespace SchoolProjectCleanArchiticture.Infrastructure.Migrations
 {
     /// <inheritdoc />
-    public partial class initState : Migration
+    public partial class init : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
@@ -32,8 +32,10 @@ namespace SchoolProjectCleanArchiticture.Infrastructure.Migrations
                 columns: table => new
                 {
                     Id = table.Column<string>(type: "nvarchar(450)", nullable: false),
+                    FullName = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     Address = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     Country = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    Code = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     UserName = table.Column<string>(type: "nvarchar(256)", maxLength: 256, nullable: true),
                     NormalizedUserName = table.Column<string>(type: "nvarchar(256)", maxLength: 256, nullable: true),
                     Email = table.Column<string>(type: "nvarchar(256)", maxLength: 256, nullable: true),
@@ -186,6 +188,32 @@ namespace SchoolProjectCleanArchiticture.Infrastructure.Migrations
                         principalTable: "AspNetUsers",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "UsersRefreshTokens",
+                columns: table => new
+                {
+                    Id = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    UserId = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    SUserId = table.Column<string>(type: "nvarchar(450)", nullable: true),
+                    TimeAdded = table.Column<DateTime>(type: "datetime2", nullable: false),
+                    ExpiredAt = table.Column<DateTime>(type: "datetime2", nullable: false),
+                    IsRevoked = table.Column<bool>(type: "bit", nullable: false),
+                    IsUsed = table.Column<bool>(type: "bit", nullable: false),
+                    JwtId = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    Token = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    RefreshToken = table.Column<string>(type: "nvarchar(max)", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_UsersRefreshTokens", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_UsersRefreshTokens_AspNetUsers_SUserId",
+                        column: x => x.SUserId,
+                        principalTable: "AspNetUsers",
+                        principalColumn: "Id");
                 });
 
             migrationBuilder.CreateTable(
@@ -410,6 +438,11 @@ namespace SchoolProjectCleanArchiticture.Infrastructure.Migrations
                 column: "ManagedDepartmentId",
                 unique: true,
                 filter: "[ManagedDepartmentId] IS NOT NULL");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_UsersRefreshTokens_SUserId",
+                table: "UsersRefreshTokens",
+                column: "SUserId");
         }
 
         /// <inheritdoc />
@@ -440,10 +473,10 @@ namespace SchoolProjectCleanArchiticture.Infrastructure.Migrations
                 name: "SubjectTeacher");
 
             migrationBuilder.DropTable(
-                name: "AspNetRoles");
+                name: "UsersRefreshTokens");
 
             migrationBuilder.DropTable(
-                name: "AspNetUsers");
+                name: "AspNetRoles");
 
             migrationBuilder.DropTable(
                 name: "students");
@@ -453,6 +486,9 @@ namespace SchoolProjectCleanArchiticture.Infrastructure.Migrations
 
             migrationBuilder.DropTable(
                 name: "subjects");
+
+            migrationBuilder.DropTable(
+                name: "AspNetUsers");
 
             migrationBuilder.DropTable(
                 name: "departments");

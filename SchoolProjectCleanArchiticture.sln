@@ -3,15 +3,15 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 17
 VisualStudioVersion = 17.10.35013.160
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SchoolProjectCleanArchiticture.Api", "SchoolProjectCleanArchiticture.Api\SchoolProjectCleanArchiticture.Api.csproj", "{E7EB5E45-DCFC-48DF-BFC3-76F86BFF6CAD}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SchoolProjectCleanArchiticture.Api", "SchoolProjectCleanArchiticture.Api\SchoolProjectCleanArchiticture.Api.csproj", "{E7EB5E45-DCFC-48DF-BFC3-76F86BFF6CAD}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SchoolProjectCleanArchiticture.Core", "SchoolProjectCleanArchiticture.Core\SchoolProjectCleanArchiticture.Core.csproj", "{DCC0EEF3-3A51-4299-A766-5DB7B3EEDEE9}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SchoolProjectCleanArchiticture.Core", "SchoolProjectCleanArchiticture.Core\SchoolProjectCleanArchiticture.Core.csproj", "{DCC0EEF3-3A51-4299-A766-5DB7B3EEDEE9}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SchoolProjectCleanArchiticture.Data", "SchoolProjectCleanArchiticture.Data\SchoolProjectCleanArchiticture.Data.csproj", "{EA500C42-A441-4BB9-BA56-8ED8E55FFD71}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SchoolProjectCleanArchiticture.Data", "SchoolProjectCleanArchiticture.Data\SchoolProjectCleanArchiticture.Data.csproj", "{EA500C42-A441-4BB9-BA56-8ED8E55FFD71}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SchoolProjectCleanArchiticture.Infrastructure", "SchoolProjectCleanArchiticture.Infrastructure\SchoolProjectCleanArchiticture.Infrastructure.csproj", "{594F7DD7-B25B-4694-AE76-0C18C87EE2F9}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SchoolProjectCleanArchiticture.Infrastructure", "SchoolProjectCleanArchiticture.Infrastructure\SchoolProjectCleanArchiticture.Infrastructure.csproj", "{594F7DD7-B25B-4694-AE76-0C18C87EE2F9}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SchoolProjectCleanArchiticture.Services", "SchoolProjectCleanArchiticture.Services\SchoolProjectCleanArchiticture.Services.csproj", "{8874FA7F-22A2-4023-96E2-87CA6121B9FC}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SchoolProjectCleanArchiticture.Services", "SchoolProjectCleanArchiticture.Services\SchoolProjectCleanArchiticture.Services.csproj", "{8874FA7F-22A2-4023-96E2-87CA6121B9FC}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

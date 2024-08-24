@@ -20,6 +20,14 @@ namespace SchoolProjectCleanArchiticture.Api.Controllers
             return NewResult(result);
 
         }
-        
+        [HttpGet]
+        [Route("GetDepartmentViewCountOfStudent")]
+        public async Task<IActionResult> GetDepartmentCountOfStudent()
+        {
+            var result = await _mediator.Send(new GetDepartmentViewQuery());
+                return NewResult(result);
+
+            
+        }        
     }
 }

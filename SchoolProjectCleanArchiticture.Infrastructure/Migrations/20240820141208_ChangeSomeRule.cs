@@ -5,14 +5,14 @@
 namespace SchoolProjectCleanArchiticture.Infrastructure.Migrations
 {
     /// <inheritdoc />
-    public partial class ChanageonecolumnRule : Migration
+    public partial class ChangeSomeRule : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
         {
             migrationBuilder.AlterColumn<string>(
-                name: "JwtId",
-                table: "UsersRefreshTokens",
+                name: "Code",
+                table: "AspNetUsers",
                 type: "nvarchar(max)",
                 nullable: true,
                 oldClrType: typeof(string),
@@ -23,8 +23,8 @@ namespace SchoolProjectCleanArchiticture.Infrastructure.Migrations
         protected override void Down(MigrationBuilder migrationBuilder)
         {
             migrationBuilder.AlterColumn<string>(
-                name: "JwtId",
-                table: "UsersRefreshTokens",
+                name: "Code",
+                table: "AspNetUsers",
                 type: "nvarchar(max)",
                 nullable: false,
                 defaultValue: "",

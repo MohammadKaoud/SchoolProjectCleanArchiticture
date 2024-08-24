@@ -1,7 +1,11 @@
 using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.Infrastructure;
+using Microsoft.AspNetCore.Mvc.Routing;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Options;
 using SchoolProjectCleanArchiticture.Core;
+using SchoolProjectCleanArchiticture.Core.Filter;
 using SchoolProjectCleanArchiticture.Core.Middleware;
 using SchoolProjectCleanArchiticture.Data;
 using SchoolProjectCleanArchiticture.Data.Entites.Identity;
@@ -25,7 +29,8 @@ builder.Services
     .AddService()
     .AddServicesInfrastructure()
     .AddServicesCore()
-    .JwtRegistering(builder.Configuration);
+    .JwtRegistering(builder.Configuration)
+    .EmailServiceReg(builder.Configuration);
 #endregion
 
 #region Localization
@@ -73,12 +78,22 @@ builder.Services.AddIdentity<SUser, IdentityRole>(options =>
     options.Password.RequireUppercase = true;
     options.Password.RequiredLength = 6;
     options.Password.RequiredUniqueChars = 1;
-    
-
-    
-}).AddEntityFrameworkStores<ApplicationDbContext>().AddDefaultTokenProviders()
-.AddTokenProvider<DataProtectorTokenProvider<SUser>>("SchoolProjectClean");
+})
+.AddEntityFrameworkStores<ApplicationDbContext>()
+.AddDefaultTokenProviders();
 #endregion
+
+#region addUrlAction
+builder.Services.AddTransient<IActionContextAccessor, ActionContextAccessor>();
+builder.Services.AddTransient<IUrlHelper>(x =>
+{
+    var actionContext = x.GetRequiredService<IActionContextAccessor>().ActionContext;
+    var factory = x.GetRequiredService<IUrlHelperFactory>();
+    return factory.GetUrlHelper(actionContext);
+});
+#endregion
+
+builder.Services.AddTransient<AuthenticationActionFilter>();
 
 
 var app = builder.Build();
@@ -89,15 +104,26 @@ if (app.Environment.IsDevelopment())
     app.UseSwagger();
     app.UseSwaggerUI();
 }
+
+using(var scope = app.Services.CreateScope())
+{
+  var userManager=  scope.ServiceProvider.GetRequiredService<UserManager<SUser>>();
+   var roleManager=scope.ServiceProvider.GetRequiredService<RoleManager<IdentityRole>>();
+    await IdentitySeeder.SeedRole(roleManager);
+    await IdentitySeeder.SeedUser(userManager);
+
+}
+
 var options=app.Services.GetRequiredService<IOptions<RequestLocalizationOptions>>();
 app.UseRequestLocalization(options.Value);
 app.UseMiddleware<SchoolProjectCleanArchiticture.Core.Middleware.ErrorHandlingMiddleware>();
-
+app.UseStaticFiles();
 app.UseHttpsRedirection();
 app.UseCors(CorsName);
 
 app.UseAuthentication();
 app.UseAuthorization();
+
 app.MapControllers();
 
 app.Run();

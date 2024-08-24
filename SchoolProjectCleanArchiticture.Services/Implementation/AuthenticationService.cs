@@ -16,6 +16,7 @@ using System.Security.Cryptography;
 using System.Text;
 using System.Threading.Tasks;
 using SchoolProjectCleanArchiticture.Data.Entites.Identity;
+using Microsoft.AspNetCore.Hosting;
 
 namespace SchoolProjectCleanArchiticture.Services.Implementation
 {
@@ -26,22 +27,26 @@ namespace SchoolProjectCleanArchiticture.Services.Implementation
         private readonly ConcurrentDictionary<string, RefreshToken> _userRefreshToken;
         private readonly IRefreshTokenRepo _refreshTokenRepo;
         private readonly UserManager<SchoolProjectCleanArchiticture.Data.Entites.Identity.SUser> _userManager;
-
-        public AuthenticationService(IConfiguration configuration,JwtSettings jwtSettings,IRefreshTokenRepo refreshTokenRepo ,UserManager<SUser>userManager)
+        private readonly RoleManager<IdentityRole> _roleManager;
+        private readonly IEmailService _emailService;
+       
+        public AuthenticationService(IConfiguration configuration, JwtSettings jwtSettings, IRefreshTokenRepo refreshTokenRepo, UserManager<SUser> userManager, RoleManager<IdentityRole> roleManager, IEmailService emailService)
         {
             _configuration = configuration;
             _jwtSettings = jwtSettings;
-            _userRefreshToken=new ConcurrentDictionary<string, RefreshToken>();
+            _userRefreshToken = new ConcurrentDictionary<string, RefreshToken>();
             _refreshTokenRepo = refreshTokenRepo;
             _userManager = userManager;
+            _roleManager = roleManager;
+            _emailService = emailService;
         }
 
         public async Task<JwtReponseAuth> GetJWTtoken(SUser sUser)
         {
 
-            var (jwtToken, token) = GenerateSecurityToken(sUser);
-           
-            var RefreshToken=GetRefreshToken(sUser.UserName);
+            var (jwtToken, token) = await GenerateSecurityToken(sUser);
+
+            var RefreshToken = GetRefreshToken(sUser.UserName);
             //_userRefreshToken.AddOrUpdate(RefreshToken.RefreshedToken,RefreshToken,(s,t)=>RefreshToken);
             var ResponseWithTokenAuth = new JwtReponseAuth
             {
@@ -51,41 +56,42 @@ namespace SchoolProjectCleanArchiticture.Services.Implementation
             var RefreshTokenToSave = new UserRefreshToken
             {
                 UserId = sUser.Id,
-                IsRevoked=false,
-                IsUsed=true,
-                TimeAdded=DateTime.Now,
-                ExpiredAt= DateTime.Now.AddDays(_jwtSettings.RefreshTokenExpiredAt),
+                IsRevoked = false,
+                IsUsed = true,
+                TimeAdded = DateTime.Now,
+                ExpiredAt = DateTime.Now.AddDays(_jwtSettings.RefreshTokenExpiredAt),
                 SUser = sUser,
-                RefreshToken=RefreshToken.RefreshedToken,
-                Token=ResponseWithTokenAuth.AccessToken,
-                JwtId=jwtToken.Id,
+                RefreshToken = RefreshToken.RefreshedToken,
+                Token = ResponseWithTokenAuth.AccessToken,
+                JwtId = jwtToken.Id,
 
 
 
             };
-              var result=await _refreshTokenRepo.AddAsync(RefreshTokenToSave);
+            var result = await _refreshTokenRepo.AddAsync(RefreshTokenToSave);
 
-            
+
             return ResponseWithTokenAuth;
         }
-        private  string  GenerateRefreshTokenstring()
+        private string GenerateRefreshTokenstring()
         {
-            var randomNumber =new Byte[32];
-            var randomNumberGenerator=RandomNumberGenerator.Create();
+            var randomNumber = new Byte[32];
+            var randomNumberGenerator = RandomNumberGenerator.Create();
             randomNumberGenerator.GetBytes(randomNumber);
             return Convert.ToBase64String(randomNumber);
         }
-        private RefreshToken GetRefreshToken(string userName) {
+        private RefreshToken GetRefreshToken(string userName)
+        {
 
             var RefreshToken = new RefreshToken
             {
                 UserName = userName,
                 ExpiredAt = DateTime.Now.AddDays(_jwtSettings.RefreshTokenExpiredAt),
-                RefreshedToken =GenerateRefreshTokenstring(),
+                RefreshedToken = GenerateRefreshTokenstring(),
             };
             return RefreshToken;
         }
-        public  List<Claim>GetUserClaims(SUser sUser)
+        public async Task<List<Claim>> GetUserClaims(SUser sUser)
         {
             List<Claim> claims = new List<Claim>
             {
@@ -94,9 +100,21 @@ namespace SchoolProjectCleanArchiticture.Services.Implementation
                 new Claim(nameof(UserClaimsModel.UserName), sUser.UserName),
                 new Claim(nameof(UserClaimsModel.Id), sUser.Id),
             };
+            var roles = await _userManager.GetRolesAsync(sUser);
+
+            foreach (var role in roles)
+            {
+                var roleClaim = new Claim(ClaimTypes.Role, role.ToString());
+                claims.Add(roleClaim);
+            }
+            var userClaims = await _userManager.GetClaimsAsync(sUser);
+            if (userClaims is not null)
+            {
+                claims.AddRange(userClaims);
+            }
             return claims;
         }
-        private (JwtSecurityToken,string)GenerateSecurityToken(SUser sUser)
+        private async Task<(JwtSecurityToken, string)> GenerateSecurityToken(SUser sUser)
         {
             var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_configuration["JWT:Key"]));
 
@@ -105,7 +123,7 @@ namespace SchoolProjectCleanArchiticture.Services.Implementation
             var jwtToken = new JwtSecurityToken(
                 issuer: _configuration["JWT:Issuer"],
                 audience: _configuration["JWT:Audience"],
-                claims: GetUserClaims(sUser),
+                claims: await GetUserClaims(sUser),
                 expires: DateTime.Now.AddMinutes(15),
                 signingCredentials: creds
             );
@@ -115,28 +133,28 @@ namespace SchoolProjectCleanArchiticture.Services.Implementation
             return (jwtToken, token);
         }
 
-        public async Task<JwtReponseAuth> GetRefreshToken(SUser userResponse,JwtSecurityToken token,string refreshToken,DateTime? ExpiredAt)
+        public async Task<JwtReponseAuth> GetRefreshToken(SUser userResponse, JwtSecurityToken token, string refreshToken, DateTime? ExpiredAt)
         {
             // ReadJwtToken
-         
+
             var response = new JwtReponseAuth();
-            var (jwtSecurityToken,newToken)= GenerateSecurityToken(userResponse);
+            var (jwtSecurityToken, newToken) = await GenerateSecurityToken(userResponse);
             var refreshTokenResult = new RefreshToken()
             {
-                ExpiredAt =(DateTime) ExpiredAt,
+                ExpiredAt = (DateTime)ExpiredAt,
                 UserName = token.Claims.FirstOrDefault(x => x.Type == nameof(UserClaimsModel.UserName)).Value,
                 RefreshedToken = refreshToken,
 
             };
-            response.AccessToken=newToken;
+            response.AccessToken = newToken;
             response.RefreshToken = refreshTokenResult;
             return response;
 
-            
 
-     
+
+
         }
-        public  JwtSecurityToken ReadJwtSecurityToken(string accessToken)
+        public JwtSecurityToken ReadJwtSecurityToken(string accessToken)
         {
             if (!accessToken.IsNullOrEmpty())
             {
@@ -161,7 +179,7 @@ namespace SchoolProjectCleanArchiticture.Services.Implementation
                 ValidAudience = _jwtSettings.Audience,
                 IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_jwtSettings.Key))
             };
-           var validationResponse= JwtTokenHandler.ValidateToken(accessToken, paramters, out SecurityToken validatedToken);
+            var validationResponse = JwtTokenHandler.ValidateToken(accessToken, paramters, out SecurityToken validatedToken);
             try
             {
                 if (validatedToken == null)
@@ -183,12 +201,12 @@ namespace SchoolProjectCleanArchiticture.Services.Implementation
 
         }
 
-        public  async Task<(string,DateTime?)> ValidateDetails(JwtSecurityToken jwtSecurityToken, string accessToken, string refreshToken)
+        public async Task<(string, DateTime?)> ValidateDetails(JwtSecurityToken jwtSecurityToken, string accessToken, string refreshToken)
         {
             var token = ReadJwtSecurityToken(accessToken);
             if (token == null || !token.Header.Alg.Equals(SecurityAlgorithms.HmacSha256Signature))
             {
-                return ("NotSameSecurityAlgorthim",null);
+                return ("NotSameSecurityAlgorthim", null);
             }
             if (token.ValidTo < DateTime.UtcNow)
             {
@@ -213,7 +231,75 @@ namespace SchoolProjectCleanArchiticture.Services.Implementation
                 userRefreshToken.IsUsed = false;
                 return ("refreshTokenhasBeenExpired", null);
             }
-            return (userId,userRefreshToken.ExpiredAt);
+            return (userId, userRefreshToken.ExpiredAt);
+        }
+
+        public async Task<string> ConfirmEmail(string UserId, string Code)
+        {
+            var user = await _userManager.FindByIdAsync(UserId);
+            if (user == null || Code == null)
+            {
+                return "userNotFound Or Code Field is Empty";
+            }
+            var result = await _userManager.ConfirmEmailAsync(user, Code);
+            if (result.Succeeded)
+            {
+                return "Succeeded";
+            }
+            return "Wrong Or Icorrect Validation To Email Service";
+        }
+
+        public async Task<string> ResetPassword(string Email)
+        {
+            var user = await _userManager.FindByEmailAsync(Email);
+            if (user != null)
+            {
+                var CodeToGenerate = new Random();
+                var CodeToPlace = CodeToGenerate.Next(1000000);
+
+                user.Code = CodeToPlace.ToString();
+                var resultofUpdate = await _userManager.UpdateAsync(user);
+                if (resultofUpdate.Succeeded)
+                {
+                    var result = await _emailService.SendEmail(Email, $"Your Code Please Put it To Reset your password :{CodeToPlace}", "Reset Password");
+                    if (result == "Success")
+                    {
+                        return "CodeHasBeenSentSuccessfully";
+                    }
+                }
+                return "Problem When Updating the User";
+
+            }
+            return "UserNotFound";
+        }
+
+        public async Task<string> ResetPasswordOperation(string Email, string Code, string Password)
+        {
+            var user = await _userManager.FindByEmailAsync(Email);
+            if (user != null)
+            {
+                if (user.Code == Code)
+                {
+                    var resultOfDeletingOldPassword = await _userManager.RemovePasswordAsync(user);
+                    if (resultOfDeletingOldPassword.Succeeded)
+                    {
+                        var resultofUpdatingPassword = await _userManager.AddPasswordAsync(user, Password);
+                        if (resultofUpdatingPassword.Succeeded)
+                        {
+                            return "Success";
+                        }
+                        return "faild While Updating the new Password";
+                    }
+                    return "Faild While Remove The Old Password";
+
+                }
+                return "Code Is Not Equal";
+
+            }
+            return "User Not Found";
+
+
+
         }
     }
 }

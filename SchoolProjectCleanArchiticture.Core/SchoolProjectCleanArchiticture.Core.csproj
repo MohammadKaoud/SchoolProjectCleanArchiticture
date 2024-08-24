@@ -1,4 +1,5 @@
-﻿<Project Sdk="Microsoft.NET.Sdk">
+﻿
+<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
     <TargetFramework>net8.0</TargetFramework>
@@ -46,6 +47,8 @@
     <Folder Include="Features\Departments\Command\Hundlers\" />
     <Folder Include="Features\Departments\Command\Models\" />
     <Folder Include="Features\Departments\Command\Validators\" />
+    <Folder Include="Features\Email\Queries\Handlers\" />
+    <Folder Include="Features\Email\Queries\Models\" />
     <Folder Include="Mapping\DepaProfiles\CommandQuery\" />
   </ItemGroup>
 

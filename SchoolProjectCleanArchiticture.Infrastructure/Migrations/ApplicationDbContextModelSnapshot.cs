@@ -17,7 +17,7 @@ namespace SchoolProjectCleanArchiticture.Infrastructure.Migrations
         {
 #pragma warning disable 612, 618
             modelBuilder
-                .HasAnnotation("ProductVersion", "8.0.7")
+                .HasAnnotation("ProductVersion", "8.0.8")
                 .HasAnnotation("Relational:MaxIdentifierLength", 128);
 
             SqlServerModelBuilderExtensions.UseIdentityColumns(modelBuilder);
@@ -215,6 +215,9 @@ namespace SchoolProjectCleanArchiticture.Infrastructure.Migrations
 
                     b.Property<string>("Address")
                         .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("Code")
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("ConcurrencyStamp")
@@ -418,6 +421,9 @@ namespace SchoolProjectCleanArchiticture.Infrastructure.Migrations
                     b.Property<int>("DepartmentId")
                         .HasColumnType("int");
 
+                    b.Property<string>("ImageUrl")
+                        .HasColumnType("nvarchar(max)");
+
                     b.Property<int?>("ManagedDepartmentId")
                         .HasColumnType("int");
 
@@ -442,6 +448,21 @@ namespace SchoolProjectCleanArchiticture.Infrastructure.Migrations
                         .HasFilter("[ManagedDepartmentId] IS NOT NULL");
 
                     b.ToTable("Teachers");
+                });
+
+            modelBuilder.Entity("SchoolProjectCleanArchiticture.Data.Views.DepartmentView", b =>
+                {
+                    b.Property<int>("DepartmentId")
+                        .HasColumnType("int");
+
+                    b.Property<string>("DepartmentName")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<int>("StudentCount")
+                        .HasColumnType("int");
+
+                    b.ToTable("DepartmentView");
                 });
 
             modelBuilder.Entity("StudentSubject", b =>

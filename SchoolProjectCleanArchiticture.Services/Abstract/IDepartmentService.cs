@@ -1,4 +1,5 @@
 ﻿using SchoolProjectCleanArchiticture.Data.Entites;
+using SchoolProjectCleanArchiticture.Data.Views;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -11,6 +12,7 @@ namespace SchoolProjectCleanArchiticture.Services.Abstract
     {
         public Task<Department>GetDepartmentByIdAsync(int id);
         public Task<bool> IsDepartmentExist(int id);
+        public Task<List<DepartmentView>> GetDepartmentView();
     }
 
 }

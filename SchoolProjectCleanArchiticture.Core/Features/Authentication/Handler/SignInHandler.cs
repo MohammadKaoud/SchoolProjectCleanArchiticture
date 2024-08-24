@@ -20,6 +20,8 @@ namespace SchoolProjectCleanArchiticture.Core.Features.Authentication.Handler
 {
     public  class SignInHandler: ResponseHundler,IRequestHandler<SignIn,ResponseM<JwtReponseAuth>>
         ,IRequestHandler<Model.RefreshToken,ResponseM<JwtReponseAuth>>
+        ,IRequestHandler<ConfirmEmailQuery,ResponseM<string>>
+    
     {
         private readonly UserManager<SUser> _userManager;
 
@@ -47,6 +49,10 @@ namespace SchoolProjectCleanArchiticture.Core.Features.Authentication.Handler
             var result=await  _signInManager.CheckPasswordSignInAsync(user, request.Password,false);
             if (result.Succeeded)
             {
+                if (!user.EmailConfirmed)
+                {
+                    return BadRequest<JwtReponseAuth>("Email Is  Not Confirmed ");
+                }
                 //Generate TokenJWT
                var jwttoken=  await _authenticationService.GetJWTtoken(user);
                 return Success<JwtReponseAuth>(jwttoken);
@@ -97,5 +103,16 @@ namespace SchoolProjectCleanArchiticture.Core.Features.Authentication.Handler
             return Success(responseToView);
 
         }
+
+        public async Task<ResponseM<string>> Handle(ConfirmEmailQuery request, CancellationToken cancellationToken)
+        {
+           var resultofConfirmation =await  _authenticationService.ConfirmEmail(request.UserId, request.Code);
+            if(resultofConfirmation== "Succeeded")
+            {
+                return Success<string>(resultofConfirmation);
+            }
+            return BadRequest<string>("Check the Internal Server Error or inside the logic Service layer ");
+        }
+       
     }
 }

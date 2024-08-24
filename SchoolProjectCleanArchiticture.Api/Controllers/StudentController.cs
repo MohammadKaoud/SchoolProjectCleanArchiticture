@@ -14,6 +14,7 @@ using SchoolProjectCleanArchiticture.Api.Base;
 using SchoolProjectCleanArchiticture.Infrastructure.Repos;
 using SchoolProjectCleanArchiticture.Services.Abstract;
 using Microsoft.AspNetCore.Authorization;
+using SchoolProjectCleanArchiticture.Core.Filter;
 
 namespace SchoolProjectCleanArchiticture.Api.Controllers
 {
@@ -25,6 +26,7 @@ namespace SchoolProjectCleanArchiticture.Api.Controllers
     public class StudentController : ApplicationBaseController
     {
         [HttpGet]
+        [ServiceFilter(typeof(AuthenticationActionFilter))]
         public async Task<IActionResult> GetStudents()
         {
             
@@ -60,6 +62,7 @@ namespace SchoolProjectCleanArchiticture.Api.Controllers
             return NewResult(request);
         }
         [HttpGet]
+
         [Route("Pagination")]
         public async Task<IActionResult> PaginatedResult([FromQuery] GetPaginatedResult query)
         {

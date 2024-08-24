@@ -5,6 +5,7 @@ using FluentValidation;
 using MediatR;
 using AutoMapper;
 using SchoolProjectCleanArchiticture.Core.Behaviors;
+using Microsoft.AspNetCore.Http;
 
 namespace SchoolProjectCleanArchiticture.Core
 {
@@ -21,10 +22,12 @@ namespace SchoolProjectCleanArchiticture.Core
 
            
                 services.AddValidatorsFromAssembly(Assembly.GetExecutingAssembly());
-           
+                    services.AddTransient<IHttpContextAccessor,HttpContextAccessor>();
                  services.AddScoped(typeof(IPipelineBehavior<,>), typeof(ValidationBehavior<,>));
             services.AddAutoMapper(typeof(DepartmentProfile));
             services.AddAutoMapper(typeof(UserProfile));
+            services.AddAutoMapper(typeof(RoleProfile));    
+            services.AddAutoMapper(typeof(TeacherProfile));
                 
            
 

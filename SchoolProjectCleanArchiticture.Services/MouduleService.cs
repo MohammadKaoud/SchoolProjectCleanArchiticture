@@ -1,5 +1,6 @@
 ﻿using Microsoft.Extensions.DependencyInjection;
 using SchoolProjectCleanArchiticture.Services.Abstract;
+using SchoolProjectCleanArchiticture.Services.AuthService;
 using SchoolProjectCleanArchiticture.Services.Implementation;
 using System;
 using System.Collections.Generic;
@@ -19,6 +20,11 @@ namespace SchoolProjectCleanArchiticture.Services
             services.AddScoped<IDepartmentService
                 , DepartmentService>();
             services.AddScoped<IAuthenticationService, AuthenticationService>();
+            services.AddScoped<IAuthorizationService, AuthorizationService>();  
+            services.AddScoped<IEmailService, EmailService>();
+            services.AddScoped<ICurrentUserService, CurrentUserService  >();
+            services.AddScoped<IFileService, FileService>();
+            services.AddScoped<ITeacherService, TeacherService>();
             return services; 
         }
         

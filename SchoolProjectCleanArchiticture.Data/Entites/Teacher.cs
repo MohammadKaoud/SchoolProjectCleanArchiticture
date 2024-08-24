@@ -19,6 +19,7 @@ namespace SchoolProjectCleanArchiticture.Data.Entites
         public int Position { get; set; }
         public string Address { get; set; }
         public decimal Salary { get; set; }
+        public string ?ImageUrl { get; set; }
 
         #region Navigation Properties
 

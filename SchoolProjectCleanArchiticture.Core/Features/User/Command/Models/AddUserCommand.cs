@@ -20,6 +20,8 @@ namespace SchoolProjectCleanArchiticture.Core.Features.User.Command.Models
         public string ?Address { get; set; }
         public string? Country { get; set; }
         public string PhoneNumber { get; set; }
+        public string? Role { get; set; }
+
         
 
     }

@@ -1,5 +1,6 @@
 ﻿using Microsoft.EntityFrameworkCore.Metadata.Internal;
 using Microsoft.Extensions.DependencyInjection;
+using SchoolProjectCleanArchiticture.Data.Views;
 using SchoolProjectCleanArchiticture.Infrastructure.Repos;
 using System;
 using System.Collections.Generic;
@@ -19,6 +20,7 @@ namespace SchoolProjectCleanArchiticture.Infrastructure
             services.AddScoped<IDepartmentRepo, DepartmentRepo>();
             services.AddScoped<ITeacherRepo, TeacherRepo>();
            services.AddScoped<IRefreshTokenRepo, RefreshTokenRepo>();
+            services.AddScoped<IViewRepository<DepartmentView>,ViewDepartmentRepo>();
             
             return services;
         }

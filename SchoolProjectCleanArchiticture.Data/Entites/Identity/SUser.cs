@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Identity;
+﻿using EntityFrameworkCore.EncryptColumn.Attribute;
+using Microsoft.AspNetCore.Identity;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations.Schema;
@@ -20,6 +21,8 @@ namespace SchoolProjectCleanArchiticture.Data.Entites.Identity
  //Stashed changes:SchoolProjectCleanArchiticture.Data/Entites/Identity/SUser.cs
         public string Address { get; set; }
         public string Country { get; set; }
+        [EncryptColumn]
+        public string ?Code { get; set; }
 
         [InverseProperty(nameof(UserRefreshToken.SUser))]
         public ICollection<UserRefreshToken> RefreshTokens { get; set; }

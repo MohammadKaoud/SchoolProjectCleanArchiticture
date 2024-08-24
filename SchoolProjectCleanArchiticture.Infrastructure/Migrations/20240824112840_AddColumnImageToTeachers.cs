@@ -5,25 +5,28 @@
 namespace SchoolProjectCleanArchiticture.Infrastructure.Migrations
 {
     /// <inheritdoc />
-    public partial class AddColumnforUserEntity : Migration
+    public partial class AddColumnImageToTeachers : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
         {
             migrationBuilder.AddColumn<string>(
-                name: "FullName",
-                table: "AspNetUsers",
+                name: "ImageUrl",
+                table: "Teachers",
                 type: "nvarchar(max)",
-                nullable: false,
-                defaultValue: "");
+                nullable: true);
+
+           
         }
 
         /// <inheritdoc />
         protected override void Down(MigrationBuilder migrationBuilder)
         {
+          
+
             migrationBuilder.DropColumn(
-                name: "FullName",
-                table: "AspNetUsers");
+                name: "ImageUrl",
+                table: "Teachers");
         }
     }
 }

@@ -1,6 +1,7 @@
 ﻿
 using Microsoft.EntityFrameworkCore;
 using SchoolProjectCleanArchiticture.Data.Entites;
+using SchoolProjectCleanArchiticture.Data.Views;
 using SchoolProjectCleanArchiticture.Infrastructure.Repos;
 using SchoolProjectCleanArchiticture.Services.Abstract;
 using System;
@@ -15,9 +16,12 @@ namespace SchoolProjectCleanArchiticture.Services.Implementation
     public class DepartmentService : IDepartmentService
     {
         private readonly IDepartmentRepo _repo;
-        public DepartmentService(IDepartmentRepo repo)
+        private readonly IViewRepository<DepartmentView> _viewRepository;   
+   
+        public DepartmentService(IDepartmentRepo repo,IViewRepository<DepartmentView> viewRepository)
         {
             _repo = repo;
+            _viewRepository = viewRepository;
         }
         public async Task<Department> GetDepartmentByIdAsync(int id)
         {
@@ -31,6 +35,12 @@ namespace SchoolProjectCleanArchiticture.Services.Implementation
             return result;  
 
 
+        }
+
+        public async Task<List<DepartmentView>> GetDepartmentView()
+        {
+         var result= await _viewRepository.GetTableAsNoTracking().ToListAsync();
+            return result;  
         }
 
         public async  Task<bool> IsDepartmentExist(int id)

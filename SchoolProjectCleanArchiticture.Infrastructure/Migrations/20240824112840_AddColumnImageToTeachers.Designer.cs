@@ -12,15 +12,15 @@ using SchoolProjectCleanArchiticture.Data;
 namespace SchoolProjectCleanArchiticture.Infrastructure.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20240805115840_initState")]
-    partial class initState
+    [Migration("20240824112840_AddColumnImageToTeachers")]
+    partial class AddColumnImageToTeachers
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
-                .HasAnnotation("ProductVersion", "8.0.7")
+                .HasAnnotation("ProductVersion", "8.0.8")
                 .HasAnnotation("Relational:MaxIdentifierLength", 128);
 
             SqlServerModelBuilderExtensions.UseIdentityColumns(modelBuilder);
@@ -208,7 +208,7 @@ namespace SchoolProjectCleanArchiticture.Infrastructure.Migrations
                         });
                 });
 
-            modelBuilder.Entity("SchoolProjectCleanArchiticture.Data.Entites.Identity.User", b =>
+            modelBuilder.Entity("SchoolProjectCleanArchiticture.Data.Entites.Identity.SUser", b =>
                 {
                     b.Property<string>("Id")
                         .HasColumnType("nvarchar(450)");
@@ -218,6 +218,9 @@ namespace SchoolProjectCleanArchiticture.Infrastructure.Migrations
 
                     b.Property<string>("Address")
                         .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("Code")
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("ConcurrencyStamp")
@@ -234,6 +237,10 @@ namespace SchoolProjectCleanArchiticture.Infrastructure.Migrations
 
                     b.Property<bool>("EmailConfirmed")
                         .HasColumnType("bit");
+
+                    b.Property<string>("FullName")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<bool>("LockoutEnabled")
                         .HasColumnType("bit");
@@ -279,6 +286,51 @@ namespace SchoolProjectCleanArchiticture.Infrastructure.Migrations
                         .HasFilter("[NormalizedUserName] IS NOT NULL");
 
                     b.ToTable("AspNetUsers", (string)null);
+                });
+
+            modelBuilder.Entity("SchoolProjectCleanArchiticture.Data.Entites.Identity.UserRefreshToken", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<DateTime>("ExpiredAt")
+                        .HasColumnType("datetime2");
+
+                    b.Property<bool>("IsRevoked")
+                        .HasColumnType("bit");
+
+                    b.Property<bool>("IsUsed")
+                        .HasColumnType("bit");
+
+                    b.Property<string>("JwtId")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("RefreshToken")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("SUserId")
+                        .HasColumnType("nvarchar(450)");
+
+                    b.Property<DateTime>("TimeAdded")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("Token")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("UserId")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("SUserId");
+
+                    b.ToTable("UsersRefreshTokens");
                 });
 
             modelBuilder.Entity("SchoolProjectCleanArchiticture.Data.Entites.Student", b =>
@@ -372,6 +424,9 @@ namespace SchoolProjectCleanArchiticture.Infrastructure.Migrations
                     b.Property<int>("DepartmentId")
                         .HasColumnType("int");
 
+                    b.Property<string>("ImageUrl")
+                        .HasColumnType("nvarchar(max)");
+
                     b.Property<int?>("ManagedDepartmentId")
                         .HasColumnType("int");
 
@@ -396,6 +451,21 @@ namespace SchoolProjectCleanArchiticture.Infrastructure.Migrations
                         .HasFilter("[ManagedDepartmentId] IS NOT NULL");
 
                     b.ToTable("Teachers");
+                });
+
+            modelBuilder.Entity("SchoolProjectCleanArchiticture.Data.Views.DepartmentView", b =>
+                {
+                    b.Property<int>("DepartmentId")
+                        .HasColumnType("int");
+
+                    b.Property<string>("DepartmentName")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<int>("StudentCount")
+                        .HasColumnType("int");
+
+                    b.ToTable("DepartmentView");
                 });
 
             modelBuilder.Entity("StudentSubject", b =>
@@ -454,7 +524,7 @@ namespace SchoolProjectCleanArchiticture.Infrastructure.Migrations
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserClaim<string>", b =>
                 {
-                    b.HasOne("SchoolProjectCleanArchiticture.Data.Entites.Identity.User", null)
+                    b.HasOne("SchoolProjectCleanArchiticture.Data.Entites.Identity.SUser", null)
                         .WithMany()
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade)
@@ -463,7 +533,7 @@ namespace SchoolProjectCleanArchiticture.Infrastructure.Migrations
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserLogin<string>", b =>
                 {
-                    b.HasOne("SchoolProjectCleanArchiticture.Data.Entites.Identity.User", null)
+                    b.HasOne("SchoolProjectCleanArchiticture.Data.Entites.Identity.SUser", null)
                         .WithMany()
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade)
@@ -478,7 +548,7 @@ namespace SchoolProjectCleanArchiticture.Infrastructure.Migrations
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.HasOne("SchoolProjectCleanArchiticture.Data.Entites.Identity.User", null)
+                    b.HasOne("SchoolProjectCleanArchiticture.Data.Entites.Identity.SUser", null)
                         .WithMany()
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade)
@@ -487,11 +557,20 @@ namespace SchoolProjectCleanArchiticture.Infrastructure.Migrations
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserToken<string>", b =>
                 {
-                    b.HasOne("SchoolProjectCleanArchiticture.Data.Entites.Identity.User", null)
+                    b.HasOne("SchoolProjectCleanArchiticture.Data.Entites.Identity.SUser", null)
                         .WithMany()
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
+                });
+
+            modelBuilder.Entity("SchoolProjectCleanArchiticture.Data.Entites.Identity.UserRefreshToken", b =>
+                {
+                    b.HasOne("SchoolProjectCleanArchiticture.Data.Entites.Identity.SUser", "SUser")
+                        .WithMany("RefreshTokens")
+                        .HasForeignKey("SUserId");
+
+                    b.Navigation("SUser");
                 });
 
             modelBuilder.Entity("SchoolProjectCleanArchiticture.Data.Entites.Student", b =>
@@ -564,6 +643,11 @@ namespace SchoolProjectCleanArchiticture.Infrastructure.Migrations
                     b.Navigation("Students");
 
                     b.Navigation("Teachers");
+                });
+
+            modelBuilder.Entity("SchoolProjectCleanArchiticture.Data.Entites.Identity.SUser", b =>
+                {
+                    b.Navigation("RefreshTokens");
                 });
 
             modelBuilder.Entity("SchoolProjectCleanArchiticture.Data.Entites.Teacher", b =>

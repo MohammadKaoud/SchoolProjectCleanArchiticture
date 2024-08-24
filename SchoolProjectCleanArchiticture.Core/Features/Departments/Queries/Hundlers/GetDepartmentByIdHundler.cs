@@ -1,5 +1,6 @@
 ﻿using AutoMapper;
 using MediatR;
+using Microsoft.EntityFrameworkCore.ChangeTracking.Internal;
 using Microsoft.Extensions.Localization;
 using SchoolProjectCleanArchiticture.Core.Base;
 using SchoolProjectCleanArchiticture.Core.Features.Departments.Dtos;
@@ -7,17 +8,19 @@ using SchoolProjectCleanArchiticture.Core.Features.Departments.Queries.Models;
 using SchoolProjectCleanArchiticture.Core.Resources;
 using SchoolProjectCleanArchiticture.Core.Wrapper;
 using SchoolProjectCleanArchiticture.Data.Entites;
+using SchoolProjectCleanArchiticture.Data.Views;
 using SchoolProjectCleanArchiticture.Services.Abstract;
 using System.Linq.Expressions;
 
-public class GetDepartmentByIdHandler : IRequestHandler<GetDepartmentByIdQuery, ResponseM<GetDepartmentByIdDto>>
+public class GetDepartmentByIdHandler : ResponseHundler,IRequestHandler<GetDepartmentByIdQuery, ResponseM<GetDepartmentByIdDto>>
+    ,IRequestHandler<GetDepartmentViewQuery,ResponseM<List<DepartmentView>>>
 {
     private readonly IMapper _mapper;
     private readonly IDepartmentService _departmentService;
     private readonly IStringLocalizer<SharedResources> _stringLocalizer;
     private readonly IStudentService _studentService;
 
-    public GetDepartmentByIdHandler(IMapper mapper, IDepartmentService departmentService, IStringLocalizer<SharedResources> stringLocalizer, IStudentService studentService)
+    public GetDepartmentByIdHandler(IMapper mapper, IDepartmentService departmentService, IStringLocalizer<SharedResources> stringLocalizer, IStudentService studentService):base(stringLocalizer)
     {
         _mapper = mapper;
         _departmentService = departmentService;
@@ -52,5 +55,15 @@ public class GetDepartmentByIdHandler : IRequestHandler<GetDepartmentByIdQuery, 
         result.Students = studentPaginated;
         response = responseHandler.Success<GetDepartmentByIdDto>(result);
         return response;
+    }
+
+    public async Task<ResponseM<List<DepartmentView>>> Handle(GetDepartmentViewQuery request, CancellationToken cancellationToken)
+    {
+        var result = await _departmentService.GetDepartmentView();
+        if (result != null)
+        {
+            return Success<List<DepartmentView>>(result);
+        }
+        return BadRequest<List<DepartmentView>>("Something went wrong While Fetch The Data");
     }
 }
